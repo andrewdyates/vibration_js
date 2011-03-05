@@ -20,17 +20,18 @@ var Vibration = {
      * }
      *
      * Attributes:
-     *   UNIT_SCALE: CONST num of input scale,  m/s^2
+     *   UNIT_SCALE: CONST num of input scale,  G
      *   MAX_SIZE: CONST int >0 of maximum samples saved
      *   ERROR: CONST int =>0 of sampling error in units, unitless
      *   items: [[int, int, int],] of (x,y,z) saved samples, unitless
-     *   mean: [num, num, num] of (x,y,z) means, m/s^2
-     *   std_dev: [num, num, num] of (x,y,z) smoothed standard deviations, m/s^2
-     *   vibration: num of vibration, mm/s^2
+     *   mean: [num, num, num] of (x,y,z) means, G
+     *   std_dev: [num, num, num] of (x,y,z) smoothed standard deviations, G
+     *   vibration: num of vibration, mG
      */
 
-    // units m/s^2, measured for iPhone 3GS (Andrew's model)
-    UNIT_SCALE: 0.0181121826171875,
+    // units in G, measured for iPhone 3GS (Andrew's model)
+    // G is 1 unit of the acceleration of gravity
+    UNIT_SCALE: 0.0181121826171875, 
     MAX_SIZE: 15,
     ERROR: 0.5,
 
@@ -99,7 +100,7 @@ var Vibration = {
 	 * 
 	 * Fires:
 	 *   vibration_update: 
-	 *     e.vibration: num of vibration in mm/s^2
+	 *     e.vibration: num of vibration in G
 	 *  */
 	var sums = [0, 0, 0];
 	var sum_sqs = [0, 0, 0];
@@ -137,10 +138,10 @@ var Vibration = {
                 std_dev[k] = 0;
             }
         }
-	// Set Computed Values to standard units (m/s^2)
+	// Set Computed Values to standard units mG (gravity / 1000)
 	this.mean = mean.map(this._unscale);
 	this.std_dev = std_dev.map(this._unscale);
-	// Set Vibration to mm/s^2
+	// Set Vibration to mG
  	this.vibration = this.std_dev.reduce(sum) * 1000;
 
 	// Fire updated event
